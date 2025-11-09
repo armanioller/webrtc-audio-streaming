@@ -10,7 +10,7 @@
     <div class="container">
         <header>
             <h1>🎙️ WebRTC Audio Streaming</h1>
-            <p>Streaming de áudio P2P em tempo real</p>
+            <p>Streaming de áudio P2P em tempo real com suporte a MP3</p>
         </header>
 
         <div class="card">
@@ -24,6 +24,29 @@
                     <label for="userId">Seu Nome:</label>
                     <input type="text" id="userId" placeholder="Digite seu nome" />
                 </div>
+
+                <!-- Audio Source Selection -->
+                <div class="form-group">
+                    <label>Fonte de Áudio:</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="audioSource" value="microphone" checked />
+                            <span>🎤 Microfone</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="audioSource" value="mp3" />
+                            <span>🎵 Arquivos MP3</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- MP3 File Selection (hidden by default) -->
+                <div id="mp3Section" class="form-group hidden">
+                    <label for="mp3Files">Selecionar Arquivos MP3:</label>
+                    <input type="file" id="mp3Files" accept="audio/mp3,audio/mpeg" multiple />
+                    <div id="playlistPreview" class="playlist-preview"></div>
+                </div>
+
                 <div class="button-group">
                     <button id="startBroadcast" class="btn btn-primary">
                         🎙️ Iniciar Transmissão
@@ -38,9 +61,35 @@
                 <h2>📡 Transmitindo</h2>
                 <div class="status-info">
                     <p><strong>Sala:</strong> <span id="currentRoom"></span></p>
+                    <p><strong>Fonte:</strong> <span id="audioSourceType">Microfone</span></p>
                     <p><strong>Status:</strong> <span id="broadcastStatus" class="status-badge">Ativo</span></p>
                     <p><strong>Ouvintes:</strong> <span id="listenerCount">0</span></p>
                 </div>
+
+                <!-- Playlist Controls (for MP3 mode) -->
+                <div id="playlistControls" class="playlist-controls hidden">
+                    <div class="now-playing">
+                        <span class="label">🎵 Tocando:</span>
+                        <span id="currentTrack">-</span>
+                    </div>
+                    <div class="player-controls">
+                        <button id="prevTrack" class="btn-control" title="Anterior">⏮️</button>
+                        <button id="playPause" class="btn-control btn-play" title="Play/Pause">▶️</button>
+                        <button id="nextTrack" class="btn-control" title="Próxima">⏭️</button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="time-info">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                    <div class="playlist-container">
+                        <h4>📋 Playlist</h4>
+                        <ul id="playlistItems"></ul>
+                    </div>
+                </div>
+
                 <div class="audio-visualizer">
                     <canvas id="visualizer" width="400" height="100"></canvas>
                 </div>
@@ -73,12 +122,13 @@
         </div>
 
         <footer>
-            <p>Desenvolvido com WebRTC + Supabase | <a href="https://github.com" target="_blank">GitHub</a></p>
+            <p>Desenvolvido com WebRTC + Supabase | <a href="https://github.com/armanioller/webrtc-audio-streaming" target="_blank">GitHub</a></p>
         </footer>
     </div>
 
-    <!-- Audio element for remote stream -->
+    <!-- Hidden audio elements -->
     <audio id="remoteAudio" autoplay></audio>
+    <audio id="localAudio" style="display:none;"></audio>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
